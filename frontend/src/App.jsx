@@ -1,40 +1,70 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SectorSelector from "./components/SectorSelector";
-import { fetchNews } from "./api";
+import NewsCard from "./components/NewsCard";
+import LoadingSkeleton from "./components/LoadingSkeleton";
+import { mockNews } from "./mockData";
 
 export default function App() {
   const [selected, setSelected] = useState(["tech", "finance"]);
+  const [news, setNews] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const testFetch = async () => {
-    try {
-      const data = await fetchNews(selected);
-      console.log(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  useEffect(() => {
+    setLoading(true);
+
+    const timer = setTimeout(() => {
+      const filteredNews = {};
+
+      selected.forEach((sector) => {
+        filteredNews[sector] = mockNews[sector] || [];
+      });
+
+      setNews(filteredNews);
+      setLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [selected]);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      <h1 className="text-4xl font-bold mb-2">
-        Agentic AI News Impact
-      </h1>
+    <div className="min-h-screen bg-slate-950 text-white px-6 py-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold mb-2">
+          Agentic AI News Impact System
+        </h1>
 
-      <p className="text-slate-400 mb-8">
-        Select sectors and analyze news impact.
-      </p>
+        <p className="text-slate-400 mb-8">
+          Select sectors to analyze live news.
+        </p>
 
-      <SectorSelector
-        selected={selected}
-        setSelected={setSelected}
-      />
+        <SectorSelector
+          selected={selected}
+          setSelected={setSelected}
+        />
 
-      <button
-        onClick={testFetch}
-        className="bg-emerald-600 hover:bg-emerald-500 px-5 py-3 rounded-xl font-medium"
-      >
-        Test Backend Connection
-      </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
+          {selected.map((sector) => (
+            <div key={sector}>
+              <h2 className="text-xl font-semibold capitalize mb-4">
+                {sector}
+              </h2>
+
+              <div className="space-y-4">
+                {loading
+                  ? Array.from({ length: 3 }).map((_, index) => (
+                      <LoadingSkeleton key={index} />
+                    ))
+                  : news[sector]?.map((article) => (
+                      <NewsCard
+                        key={article.id}
+                        article={article}
+                      />
+                    ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
