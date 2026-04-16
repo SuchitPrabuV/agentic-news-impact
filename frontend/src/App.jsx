@@ -1,3 +1,5 @@
+import ImpactPanel from "./components/ImpactPanel";
+import { mockPrediction } from "./mockPrediction";
 import { useEffect, useState } from "react";
 import SectorSelector from "./components/SectorSelector";
 import NewsCard from "./components/NewsCard";
@@ -8,6 +10,9 @@ export default function App() {
   const [selected, setSelected] = useState(["tech", "finance"]);
   const [news, setNews] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const [predictionLoading, setPredictionLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -58,6 +63,16 @@ export default function App() {
                       <NewsCard
                         key={article.id}
                         article={article}
+                        onClick={() => {
+                          setSelectedArticle(article);
+                          setPrediction(null);
+                          setPredictionLoading(true);
+
+                          setTimeout(() => {
+                            setPrediction(mockPrediction);
+                            setPredictionLoading(false);
+                          }, 1000);
+                        }}
                       />
                     ))}
               </div>
@@ -65,6 +80,30 @@ export default function App() {
           ))}
         </div>
       </div>
++
+      {selectedArticle && (
+        <ImpactPanel
+          article={selectedArticle}
+          prediction={
+            predictionLoading
+              ? {
+                  impact_level: "Loading",
+                  summary: "Loading analysis...",
+                  affected_entities: [],
+                  short_term_impact: "",
+                  long_term_impact: "",
+                  sector_impact: "",
+                  confidence_score: 0,
+                  tags: [],
+                }
+              : prediction
+          }
+          onClose={() => {
+            setSelectedArticle(null);
+            setPrediction(null);
+          }}
+        />
+      )}
     </div>
   );
 }

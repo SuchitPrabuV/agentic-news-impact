@@ -10,9 +10,9 @@ function getTimeAgo(dateString) {
   return `${diffDays}d ago`;
 }
 
-export default function NewsCard({ article }) {
+export default function NewsCard({ article, onClick }) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-600 transition cursor-pointer">
+    <div onClick={onClick} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-600 transition cursor-pointer">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs uppercase bg-blue-600 px-2 py-1 rounded-full">
           {article.sector}
