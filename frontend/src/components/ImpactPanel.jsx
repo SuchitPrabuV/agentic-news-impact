@@ -7,7 +7,7 @@ export default function ImpactPanel({ article, prediction, onClose }) {
         className="fixed inset-0 z-50 flex justify-end bg-black/50"
         onClick={onClose}
         >
-        <div className="w-full max-w-2xl h-full bg-slate-950 border-l border-slate-800 p-6 overflow-y-auto transform transition-transform duration-300 translate-x-0" onClick={(e) => e.stopPropagation()}>
+        <div className="w-full sm:w-[90%] lg:w-[700px] h-full bg-slate-950 border-l border-slate-800 p-6 overflow-y-auto transform transition-transform duration-300 translate-x-0" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-6">
             <div>
                 <p className="text-sm uppercase text-blue-400 mb-2">

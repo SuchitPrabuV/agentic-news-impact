@@ -1,35 +1,47 @@
 import ImpactPanel from "./components/ImpactPanel";
 import { mockPrediction } from "./mockPrediction";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SectorSelector from "./components/SectorSelector";
 import NewsCard from "./components/NewsCard";
 import LoadingSkeleton from "./components/LoadingSkeleton";
 import { mockNews } from "./mockData";
+import EmptyState from "./components/EmptyState";
+import ErrorState from "./components/ErrorState";
+import { useQuery } from "@tanstack/react-query";
 
 export default function App() {
   const [selected, setSelected] = useState(["tech", "finance"]);
   const [news, setNews] = useState({});
-  const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [predictionLoading, setPredictionLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [lastUpdated, setLastUpdated] = useState(null);
 
-  useEffect(() => {
-    setLoading(true);
+  const { isLoading } = useQuery({
+    queryKey: ["news", selected],
+    queryFn: async () => {
+      setError("");
 
-    const timer = setTimeout(() => {
-      const filteredNews = {};
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
-      selected.forEach((sector) => {
-        filteredNews[sector] = mockNews[sector] || [];
-      });
+        const filteredNews = {};
 
-      setNews(filteredNews);
-      setLoading(false);
-    }, 800);
+        selected.forEach((sector) => {
+          filteredNews[sector] = mockNews[sector] || [];
+        });
 
-    return () => clearTimeout(timer);
-  }, [selected]);
+        setNews(filteredNews);
+        setLastUpdated(new Date());
+        return filteredNews;
+      } catch (err) {
+        setError("Could not load news. Please try again.");
+        return {};
+      }
+    },
+    refetchInterval: 1000 * 60 * 15,
+  });
 
   return (
     <div className="min-h-screen bg-slate-950 text-white px-6 py-8">
@@ -47,6 +59,18 @@ export default function App() {
           setSelected={setSelected}
         />
 
+        {lastUpdated && (
+          <p className="text-sm text-slate-500 mb-4">
+            Last updated: {lastUpdated.toLocaleTimeString()}
+          </p>
+        )}
+
+        {error && (
+          <div className="mb-6">
+            <ErrorState message={error} />
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
           {selected.map((sector) => (
             <div key={sector}>
@@ -55,11 +79,12 @@ export default function App() {
               </h2>
 
               <div className="space-y-4">
-                {loading
+                {isLoading
                   ? Array.from({ length: 3 }).map((_, index) => (
                       <LoadingSkeleton key={index} />
                     ))
-                  : news[sector]?.map((article) => (
+                  : news[sector]?.length > 0 ? (
+                    news[sector].map((article) => (
                       <NewsCard
                         key={article.id}
                         article={article}
@@ -74,13 +99,16 @@ export default function App() {
                           }, 1000);
                         }}
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <EmptyState sector={sector} />
+                  )}
               </div>
             </div>
           ))}
         </div>
       </div>
-+
+
       {selectedArticle && (
         <ImpactPanel
           article={selectedArticle}
