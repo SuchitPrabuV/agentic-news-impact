@@ -8,7 +8,7 @@ import requests
 from dotenv import load_dotenv
 from fastapi import HTTPException
 
-from classifier.predict import classify
+from backend.classifier.predict import classify
 
 load_dotenv()
 

@@ -5,9 +5,11 @@ const API = axios.create({
 });
 
 export const fetchNews = async (sectors) => {
-  const response = await API.get(
-    `/api/news?sectors=${sectors.join(",")}`
-  );
+  const response = await API.get("/api/news", {
+    params: {
+      sectors: sectors.join(","),
+    },
+  });
   return response.data;
 };
 

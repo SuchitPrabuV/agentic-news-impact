@@ -4,9 +4,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.schemas import ArticleResponse, ImpactResponse, PredictRequest
-from services.news_service import fetch_news
-from services.predict_service import generate_impact
+from backend.models.schemas import ArticleResponse, ImpactResponse, PredictRequest
+from backend.services.news_service import fetch_news
+from backend.services.predict_service import generate_impact
 
 load_dotenv()
 

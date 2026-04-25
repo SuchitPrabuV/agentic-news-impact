@@ -7,8 +7,8 @@ import requests
 from dotenv import load_dotenv
 from fastapi import HTTPException
 
-from models.schemas import ImpactResponse
-from utils.json_utils import extract_json
+from backend.models.schemas import ImpactResponse
+from backend.utils.json_utils import extract_json
 
 load_dotenv()
 
@@ -18,7 +18,7 @@ You are an expert financial and industry analyst AI.
 
 Analyze the news article and return ONLY valid JSON.
 
-{
+{{
   "summary": "...",
   "impact_level": "Low | Medium | High",
   "affected_entities": ["..."],
@@ -27,7 +27,7 @@ Analyze the news article and return ONLY valid JSON.
   "sector_impact": "...",
   "confidence_score": 0-100,
   "tags": ["..."]
-}
+}}
 
 STRICT RULES:
 - Output ONLY JSON

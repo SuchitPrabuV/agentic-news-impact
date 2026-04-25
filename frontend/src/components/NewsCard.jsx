@@ -19,7 +19,7 @@ export default function NewsCard({ article, onClick }) {
         </span>
 
         <span className="text-xs text-slate-400">
-          {getTimeAgo(article.published_at)}
+          {getTimeAgo(article.publishedAt)}
         </span>
       </div>
 

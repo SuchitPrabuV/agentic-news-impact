@@ -1,5 +1,5 @@
 export default function SectorSelector({ selected, setSelected }) {
-  const sectors = ["tech", "finance", "business", "health"];
+  const sectors = ["technology", "finance", "business", "health"];
 
   const toggleSector = (sector) => {
     if (selected.includes(sector)) {
